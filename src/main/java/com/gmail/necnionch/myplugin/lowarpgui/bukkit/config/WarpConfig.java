@@ -46,4 +46,8 @@ public class WarpConfig extends BukkitConfigDriver {
         return super.save();
     }
 
+    public Map<String, WarpPoint> points() {
+        return points;
+    }
+
 }
