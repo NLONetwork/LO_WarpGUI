@@ -22,6 +22,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.jetbrains:annotations:20.1.0'
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
     implementation "org.geysermc.floodgate:api:2.2.0-SNAPSHOT"
 }
