@@ -6,9 +6,13 @@ depend: [ LOInfoGUI, floodgate ]
 authors: [ Necnion8 ]
 
 commands:
+  warpgui:
+    permission: warpgui.command.warpgui
   warpguisetup:
     permission: warpgui.command.setup
 
 permissions:
+  warpgui.command.warpgui:
+    defualt: true
   warpgui.command.setup:
     default: op
