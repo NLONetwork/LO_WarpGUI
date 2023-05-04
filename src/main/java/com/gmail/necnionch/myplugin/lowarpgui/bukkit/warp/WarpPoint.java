@@ -1,7 +1,14 @@
 package com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Locale;
+import java.util.Optional;
 
 public class WarpPoint {
 
@@ -31,6 +38,12 @@ public class WarpPoint {
 
     public @Nullable String getDisplayName() {
         return displayName;
+    }
+
+    public String getDisplayNameOrId() {
+        return Optional.ofNullable(displayName)
+                .map(s -> ChatColor.translateAlternateColorCodes('&', s))
+                .orElse(id);
     }
 
     public int getSlot() {
@@ -86,6 +99,23 @@ public class WarpPoint {
     }
 
 
+    public void setPosition(World world, Location location) {
+        this.world = world.getName();
+        this.x = location.getBlockX() + 0.5;
+        this.y = location.getY();
+        this.z = location.getBlockZ() + 0.5;
+        this.yaw = (int) (location.getYaw() - 22.5) / 45 % 45;
+    }
+
+    public Location createLocation() throws WorldNotFoundError {
+        World world = Bukkit.getWorld(this.world);
+        if (world == null)
+            throw new WorldNotFoundError(this.world);
+
+        return new Location(world, x, y, z, yaw, 0);
+    }
+
+
     public void save(ConfigurationSection config) {
         config.set("display", displayName);
         config.set("slot", slot);
@@ -106,6 +136,26 @@ public class WarpPoint {
         int yaw = section.getInt("d");
 
         return new WarpPoint(id, display, slot, world, x, y, z, yaw);
+    }
+
+
+    public static boolean allowedIdNaming(String value) {
+        return value.toLowerCase(Locale.ROOT).matches("[a-z0-9_-]+");
+    }
+
+
+    public static final class WorldNotFoundError extends Exception {
+
+        private final String world;
+
+        public WorldNotFoundError(String world) {
+            this.world = world;
+        }
+
+        public String getWorld() {
+            return world;
+        }
+
     }
 
 }
