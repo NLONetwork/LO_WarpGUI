@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -113,6 +114,11 @@ public class WarpPoint {
             throw new WorldNotFoundError(this.world);
 
         return new Location(world, x, y, z, yaw, 0);
+    }
+
+    public void teleport(Entity entity) throws WorldNotFoundError {
+        entity.teleport(createLocation());
+        entity.sendMessage(ChatColor.GOLD + getDisplayNameOrId() + "ポイントに移動しました！");
     }
 
 
