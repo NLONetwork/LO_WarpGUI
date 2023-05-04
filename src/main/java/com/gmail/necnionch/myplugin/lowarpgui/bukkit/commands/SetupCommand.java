@@ -41,7 +41,7 @@ public class SetupCommand implements TabExecutor {
                 executeHelp(sender, label);
             } else if (args[0].equalsIgnoreCase("create")) {
                 String point = getArgument(args, 1, "ポイントID を指定してください");
-                String display = (3 < args.length) ? args[2] : null;
+                String display = (3 <= args.length) ? args[2] : null;
                 executeCreate(sender, label, point, display);
 
             } else if (args[0].equalsIgnoreCase("pos")) {
@@ -156,7 +156,7 @@ public class SetupCommand implements TabExecutor {
                             point.getY() +
                             ChatColor.GRAY + ", " + ChatColor.WHITE +
                             point.getZ() +
-                            (point.getDisplayName() != null ? ChatColor.WHITE + "(" + ChatColor.GOLD + point.getDisplayNameOrId() + ChatColor.WHITE + ")" : "");
+                            (point.getDisplayName() != null ? ChatColor.WHITE + "  (" + ChatColor.GOLD + point.getDisplayNameOrId() + ChatColor.WHITE + ")" : "");
                     sender.sendMessage(sb);
                 });
     }
@@ -166,7 +166,7 @@ public class SetupCommand implements TabExecutor {
         sender.sendMessage("");
         sender.sendMessage("  ポイントID: " + point.getId() + ChatColor.GRAY + "  (表示並び番: " + point.getSlot()  + ")");
         sender.sendMessage("  表示名: " + ChatColor.GOLD + point.getDisplayNameOrId());
-        sender.sendMessage("  座標: " + String.format("%s, %f, %f, %f", point.getWorld(), point.getX(),  point.getY(), point.getZ()));
+        sender.sendMessage("  座標: " + String.format("%s, %.1f, %.1f, %.1f", point.getWorld(), point.getX(),  point.getY(), point.getZ()));
         sender.sendMessage("");
     }
 
