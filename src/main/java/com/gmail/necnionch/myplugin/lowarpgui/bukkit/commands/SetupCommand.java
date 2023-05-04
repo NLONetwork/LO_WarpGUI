@@ -8,11 +8,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class SetupCommand implements TabExecutor {
 
@@ -39,7 +42,7 @@ public class SetupCommand implements TabExecutor {
             } else if (args[0].equalsIgnoreCase("create")) {
                 String point = getArgument(args, 1, "ポイントID を指定してください");
                 String display = (3 < args.length) ? args[2] : null;
-                executeCreate(sender, point, display);
+                executeCreate(sender, label, point, display);
 
             } else if (args[0].equalsIgnoreCase("pos")) {
                 String point = getArgument(args, 1, "ポイントID を指定してください");
@@ -86,30 +89,85 @@ public class SetupCommand implements TabExecutor {
             String line = docs[0];
             if (docs[1] != null)
                 line += " " + ChatColor.AQUA + docs[1];
-            sender.sendMessage(ChatColor.WHITE + "  " + label + ChatColor.YELLOW + " " + line);
+            sender.sendMessage(ChatColor.WHITE + "  /" + label + ChatColor.YELLOW + " " + line);
             sender.sendMessage(ChatColor.DARK_GRAY + "  => " + ChatColor.GRAY + docs[2]);
         });
         sender.sendMessage("");
     }
 
-    private void executeCreate(CommandSender sender, String id, @Nullable String displayName) {
+    private void executeCreate(CommandSender sender, String label, String id, @Nullable String displayName) {
+        if (!WarpPoint.allowedIdNaming(id))
+            throw Error.of("ID に半角英数字以外を使用することはできません");
 
+        id = id.toLowerCase(Locale.ROOT);
+        if (config.points().containsKey(id))
+            throw Error.of("ポイントID " + id + " は既に設定されています");
+
+        WarpPoint point = new WarpPoint(id, displayName, 0, "", 0, 0, 0, 0);
+        boolean savedLocation = false;
+        if (sender instanceof Player) {
+            Player player = (Player) sender;
+            point.setPosition(player.getWorld(), player.getLocation());
+            savedLocation = true;
+        }
+
+        config.points().put(id, point);
+        config.save();
+
+        sender.sendMessage(ChatColor.GOLD + "ポイント " + id + " を" + (savedLocation ? "現在地で" : "") + "登録しました");
+        sender.sendMessage("/" + label + " pos (id) を実行し座標を" + (savedLocation ? "変更できます" : "設定してください"));
     }
 
     private void executePosition(CommandSender sender, WarpPoint point) {
+        Player player = getPlayer(sender);
 
+        point.setPosition(player.getWorld(), player.getLocation());
+        config.save();
+
+        sender.sendMessage(ChatColor.GOLD + "ポイント " + point.getId() + " の座標を現在地に設定しました");
     }
 
     private void executeSlot(CommandSender sender, WarpPoint point, int slot) {
-
+        point.setSlot(slot);
+        config.save();
+        sender.sendMessage(ChatColor.GOLD + "ポイント " + point.getId() + " の表示並び番号を " + slot + " に設定しました");
     }
 
     private void executeList(CommandSender sender) {
+        Map<String, WarpPoint> points = config.points();
 
+        if (points.isEmpty()) {
+            throw Error.of("設定されているポイントが1つもありません");
+        }
+
+        sender.sendMessage(ChatColor.WHITE + "[LOWarpGUI] Warp Point List");
+        points.values().stream()
+                .sorted(Comparator.comparingInt(WarpPoint::getSlot))
+                .forEachOrdered(point -> {
+                    String sb = "  " + ChatColor.YELLOW +
+                            String.format("%-10s", point.getId()) +
+                            ChatColor.GRAY +
+                            "  -  " +
+                            ChatColor.WHITE +
+                            point.getWorld() +
+                            ChatColor.GRAY + ", " + ChatColor.WHITE +
+                            point.getX() +
+                            ChatColor.GRAY + ", " + ChatColor.WHITE +
+                            point.getY() +
+                            ChatColor.GRAY + ", " + ChatColor.WHITE +
+                            point.getZ() +
+                            (point.getDisplayName() != null ? ChatColor.WHITE + "(" + ChatColor.GOLD + point.getDisplayNameOrId() + ChatColor.WHITE + ")" : "");
+                    sender.sendMessage(sb);
+                });
     }
 
     private void executeInfo(CommandSender sender, WarpPoint point) {
-
+        sender.sendMessage(ChatColor.WHITE + "[LOWarpGUI] Warp Point List");
+        sender.sendMessage("");
+        sender.sendMessage("  ポイントID: " + point.getId() + ChatColor.GRAY + "  (表示並び番: " + point.getSlot()  + ")");
+        sender.sendMessage("  表示名: " + ChatColor.GOLD + point.getDisplayNameOrId());
+        sender.sendMessage("  座標: " + String.format("%s, %f, %f, %f", point.getWorld(), point.getX(),  point.getY(), point.getZ()));
+        sender.sendMessage("");
     }
 
 
@@ -144,6 +202,13 @@ public class SetupCommand implements TabExecutor {
         } catch (IndexOutOfBoundsException e) {
             throw Error.of(noSpecifiedMessage);
         }
+    }
+
+    private Player getPlayer(CommandSender sender) {
+        if (sender instanceof Player) {
+            return ((Player) sender);
+        }
+        throw Error.of("プレイヤーのみ実行することができます");
     }
 
 }

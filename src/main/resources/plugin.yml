@@ -4,3 +4,11 @@ main: com.gmail.necnionch.myplugin.lowarpgui.bukkit.WarpGUIPlugin
 api-version: 1.13
 depend: [ LOInfoGUI, floodgate ]
 authors: [ Necnion8 ]
+
+commands:
+  warpguisetup:
+    permission: warpgui.command.setup
+
+permissions:
+  warpgui.command.setup:
+    default: op
