@@ -2,5 +2,5 @@ name: LOWarpGUI
 version: '${version}'
 main: com.gmail.necnionch.myplugin.lowarpgui.bukkit.WarpGUIPlugin
 api-version: 1.13
-softdepend: [ LOInfoGUI, floodgate ]
+depend: [ LOInfoGUI, floodgate ]
 authors: [ Necnion8 ]
