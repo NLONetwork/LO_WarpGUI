@@ -104,7 +104,7 @@ public class WarpPoint {
         this.x = location.getBlockX() + 0.5;
         this.y = location.getY();
         this.z = location.getBlockZ() + 0.5;
-        this.yaw = (int) (location.getYaw() - 22.5) / 45 % 45;
+        this.yaw = (Math.round(location.getYaw() / 45f) & 0x7) * 45;
     }
 
     public Location createLocation() throws WorldNotFoundError {
