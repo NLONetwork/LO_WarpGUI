@@ -32,6 +32,7 @@ public class SetupCommand implements TabExecutor {
         lists.add(new String[] {"create", "(id) [表示名]", "ワープポイントを作成"});
         lists.add(new String[] {"pos", "(id)", "テレポート座標を今居る地点に設定"});
         lists.add(new String[] {"slot", "(id) (並び番号)", "表示並び番号を設定 (少ない数から順に)"});
+        lists.add(new String[] {"remove", "(id)", "ワープポイントを削除"});
         lists.add(new String[] {"reload", null, "設定ファイルを再読み込み"});
     }
 
@@ -66,6 +67,10 @@ public class SetupCommand implements TabExecutor {
             } else if (args[0].equalsIgnoreCase("info")) {
                 String point = getArgument(args, 1, "ポイントID を指定してください");
                 executeInfo(sender, getPoint(point));
+
+            } else if (args[0].equalsIgnoreCase("remove")) {
+                String point = getArgument(args, 1, "ポイントID を指定してください");
+                executeRemove(sender, getPoint(point));
 
             } else if (args[0].equalsIgnoreCase("reload")) {
                 executeReload(sender);
@@ -172,6 +177,13 @@ public class SetupCommand implements TabExecutor {
         sender.sendMessage("  表示名: " + ChatColor.GOLD + point.getDisplayNameOrId());
         sender.sendMessage("  座標: " + String.format("%s, %.1f, %.1f, %.1f", point.getWorld(), point.getX(),  point.getY(), point.getZ()));
         sender.sendMessage("");
+    }
+
+    private void executeRemove(CommandSender sender, WarpPoint point) {
+        if (config.points().remove(point.getId(), point)) {
+            config.save();
+            sender.sendMessage(ChatColor.GOLD + "ポイント " + point.getId() + " を削除しました");
+        }
     }
 
     private void executeReload(CommandSender sender) {
