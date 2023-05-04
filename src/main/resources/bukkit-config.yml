@@ -1,0 +1,10 @@
+
+targets:
+  spawn:
+    display: "&6初期スポーン地点"
+    slot: 0
+    world: lobby
+    x: 0
+    y: 0
+    z: 0
+    d: 0
