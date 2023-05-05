@@ -38,6 +38,11 @@ public final class WarpGUIPlugin extends JavaPlugin {
 
 
     public void openGUI(Player player) {
+        if (!getServer().getPluginManager().isPluginEnabled("floodgate")) {
+            openBukkitGUI(player);
+            return;
+        }
+
         FloodgatePlayer floodgatePlayer = FloodgateApi.getInstance().getPlayer(player.getUniqueId());
         if (floodgatePlayer != null) {
             openFloodgateGUI(floodgatePlayer);
