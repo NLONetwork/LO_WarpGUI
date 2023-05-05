@@ -122,7 +122,7 @@ public class WarpPoint {
 
     public void teleport(Entity entity) throws WorldNotFoundError {
         entity.teleport(createLocation());
-        entity.sendMessage(ChatColor.GOLD + getDisplayNameOrId() + "に移動しました！");
+        entity.sendMessage(ChatColor.GOLD + getDisplayNameOrId() + ChatColor.GOLD + "に移動しました！");
     }
 
 

@@ -2,6 +2,7 @@ package com.gmail.necnionch.myplugin.lowarpgui.bukkit;
 
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.MainCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.SetupCommand;
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.WarpCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.config.WarpConfig;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.events.WarpPointAccessCheckEvent;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp.WarpPoint;
@@ -19,6 +20,8 @@ public final class WarpGUIPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         warpConfig.load();
+        Optional.ofNullable(getCommand("warp")).ifPresent(cmd ->
+                cmd.setExecutor(new WarpCommand(this)));
         Optional.ofNullable(getCommand("warpgui")).ifPresent(cmd ->
                 cmd.setExecutor(new MainCommand(this)));
         Optional.ofNullable(getCommand("warpguisetup")).ifPresent(cmd ->
