@@ -3,7 +3,10 @@ package com.gmail.necnionch.myplugin.lowarpgui.bukkit;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.MainCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.SetupCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.config.WarpConfig;
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.events.WarpPointAccessCheckEvent;
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp.WarpPoint;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.geysermc.floodgate.api.FloodgateApi;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
@@ -48,6 +51,20 @@ public final class WarpGUIPlugin extends JavaPlugin {
 
     }
 
+    public boolean checkAllowedAccess(WarpPoint point, Player player) throws WarpPoint.AccessDenied {
+        if (!player.hasPermission("warpgui.access." + point.getId()))
+            return false;
 
+        WarpPointAccessCheckEvent event = new WarpPointAccessCheckEvent(point, player);
+        getServer().getPluginManager().callEvent(event);
+
+        if (Event.Result.DENY.equals(event.getResult())) {
+            if (event.getReason() != null)
+                throw event.getReason();
+            return false;
+        }
+
+        return Event.Result.DEFAULT.equals(event.getResult()) || Event.Result.ALLOW.equals(event.getResult());
+    }
 
 }

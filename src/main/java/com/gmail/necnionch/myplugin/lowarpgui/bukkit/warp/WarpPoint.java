@@ -1,11 +1,14 @@
 package com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp;
 
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.WarpGUIPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Locale;
@@ -13,6 +16,7 @@ import java.util.Optional;
 
 public class WarpPoint {
 
+    private final WarpGUIPlugin plugin = JavaPlugin.getPlugin(WarpGUIPlugin.class);
     private final String id;
     private @Nullable String displayName;
     private int slot;
@@ -144,6 +148,18 @@ public class WarpPoint {
         return new WarpPoint(id, display, slot, world, x, y, z, yaw);
     }
 
+    public boolean checkAllowedAccess(Player player) throws AccessDenied {
+        return plugin.checkAllowedAccess(this, player);
+    }
+
+    public boolean isAllowedAccess(Player player) {
+        try {
+            return plugin.checkAllowedAccess(this, player);
+        } catch (AccessDenied e) {
+            return false;
+        }
+    }
+
 
     public static boolean allowedIdNaming(String value) {
         return value.toLowerCase(Locale.ROOT).matches("[a-z0-9_-]+");
@@ -160,6 +176,21 @@ public class WarpPoint {
 
         public String getWorld() {
             return world;
+        }
+
+    }
+
+    public static final class AccessDenied extends Exception {
+
+        private @Nullable final String message;
+
+        public AccessDenied(@Nullable String reasonMessage) {
+            message = reasonMessage;
+        }
+
+        @Override
+        public @Nullable String getMessage() {
+            return message;
         }
 
     }
