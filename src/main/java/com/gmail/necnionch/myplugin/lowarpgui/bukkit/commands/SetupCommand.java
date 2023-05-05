@@ -12,10 +12,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SetupCommand implements TabExecutor {
 
@@ -87,7 +86,18 @@ public class SetupCommand implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        return null;
+        if (args.length <= 1) {
+            String tmp = args[0].toLowerCase(Locale.ROOT);
+            return Stream.of("list", "info", "create", "pos", "slot", "remove", "reload")
+                    .filter(s -> s.startsWith(tmp))
+                    .collect(Collectors.toList());
+        } else if (args[0].toLowerCase(Locale.ROOT).matches("info|pos|slot|remove")) {
+            String tmp = args[1].toLowerCase(Locale.ROOT);
+            return config.points().keySet().stream()
+                    .filter(s -> s.startsWith(tmp))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
 
