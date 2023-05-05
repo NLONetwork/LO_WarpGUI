@@ -20,7 +20,7 @@ public final class WarpGUIPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         warpConfig.load();
-        Optional.ofNullable(getCommand("warp")).ifPresent(cmd ->
+        Optional.ofNullable(getCommand("warptp")).ifPresent(cmd ->
                 cmd.setExecutor(new WarpCommand(this)));
         Optional.ofNullable(getCommand("warpgui")).ifPresent(cmd ->
                 cmd.setExecutor(new MainCommand(this)));

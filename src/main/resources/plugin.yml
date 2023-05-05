@@ -7,8 +7,8 @@ authors: [ Necnion8 ]
 softdepend: [ floodgate ]
 
 commands:
-  warp:
-    aliases: [ wtp, warptp ]
+  warptp:
+    aliases: [ wtp, warp ]
     permission: warpgui.command.warp
   warpgui:
     permission: warpgui.command.warpgui
