@@ -5,6 +5,7 @@ import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.SetupCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.WarpCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.config.WarpConfig;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.events.WarpPointAccessCheckEvent;
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.panel.WarpMenuPanel;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp.WarpPoint;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -52,7 +53,7 @@ public final class WarpGUIPlugin extends JavaPlugin {
     }
 
     public void openBukkitGUI(Player player) {
-
+        WarpMenuPanel.open(player);
     }
 
     public void openFloodgateGUI(FloodgatePlayer player) {
