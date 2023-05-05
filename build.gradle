@@ -22,9 +22,10 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains:annotations:20.1.0'
+    implementation 'org.jetbrains:annotations:24.0.1'
     compileOnly 'org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT'
     implementation "org.geysermc.floodgate:api:2.2.0-SNAPSHOT"
+    implementation files("libs/LOInfoGUI-1.0.0.jar")
 }
 
 def targetJavaVersion = 8
