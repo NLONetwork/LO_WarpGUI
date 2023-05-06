@@ -6,7 +6,9 @@ import com.gmail.necnionch.myplugin.lowarpgui.bukkit.commands.WarpCommand;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.config.WarpConfig;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.events.WarpPointAccessCheckEvent;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.panel.WarpMenuPanel;
+import com.gmail.necnionch.myplugin.lowarpgui.bukkit.panel.WarpMenuPanelFloodgate;
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp.WarpPoint;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -57,7 +59,7 @@ public final class WarpGUIPlugin extends JavaPlugin {
     }
 
     public void openFloodgateGUI(FloodgatePlayer player) {
-
+        WarpMenuPanelFloodgate.open(Bukkit.getPlayer(player.getJavaUniqueId()), player);
     }
 
     public boolean checkAllowedAccess(WarpPoint point, Player player) throws WarpPoint.AccessDenied {
