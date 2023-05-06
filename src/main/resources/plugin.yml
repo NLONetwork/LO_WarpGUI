@@ -16,12 +16,22 @@ commands:
     permission: warpgui.command.setup
 
 permissions:
-  warpgui.command.warp:
-    default: true
-  warpgui.command.warpgui:
-    defualt: true
-  warpgui.command.setup:
-    default: op
+  warpgui.command.warp: {}
+  warpgui.command.warpgui: {}
+  warpgui.command.setup: {}
+  warpgui.access.*: {}  # pointId
 
-  warpgui.access.*:  # pointId
+  warpgui.user:
     default: true
+    children:
+      - warpgui.command.warp
+      - warpgui.command.warpgui
+      - warpgui.access.*
+
+  warpgui.admin:
+    default: op
+    children:
+      - warpgui.command.warp
+      - warpgui.command.warpgui
+      - warpgui.access.*
+      - warpgui.command.setup
