@@ -8,10 +8,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.geysermc.cumulus.form.SimpleForm;
+import org.geysermc.cumulus.util.FormImage;
 import org.geysermc.floodgate.api.player.FloodgatePlayer;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WarpMenuPanelFloodgate {
@@ -43,7 +45,10 @@ public class WarpMenuPanelFloodgate {
         b.title("ワープポイント一覧");
 
         for (WarpPoint point : points) {
-            b.button(ChatColor.stripColor(point.getDisplayNameOrId()) + " に移動する");
+            FormImage formImage = Optional.ofNullable(point.getImageIcon())
+                    .map(url -> FormImage.of(FormImage.Type.URL, url))
+                    .orElse(null);
+            b.button(ChatColor.stripColor(point.getDisplayNameOrId()) + " に移動する", formImage);
             handlers.add(() -> {
                 try {
                     point.teleport(bukkitPlayer);

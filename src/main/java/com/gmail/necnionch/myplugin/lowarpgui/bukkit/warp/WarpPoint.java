@@ -1,10 +1,7 @@
 package com.gmail.necnionch.myplugin.lowarpgui.bukkit.warp;
 
 import com.gmail.necnionch.myplugin.lowarpgui.bukkit.WarpGUIPlugin;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -20,6 +17,8 @@ public class WarpPoint {
     private final String id;
     private @Nullable String displayName;
     private int slot;
+    private @Nullable Material itemIcon;
+    private @Nullable String imageIcon;
     private String world;
     private double x;
     private double y;
@@ -55,6 +54,14 @@ public class WarpPoint {
         return slot;
     }
 
+    public @Nullable Material getItemIcon() {
+        return itemIcon;
+    }
+
+    public @Nullable String getImageIcon() {
+        return imageIcon;
+    }
+
     public double getX() {
         return x;
     }
@@ -81,6 +88,14 @@ public class WarpPoint {
 
     public void setSlot(int slot) {
         this.slot = slot;
+    }
+
+    public void setItemIcon(@Nullable Material itemIcon) {
+        this.itemIcon = itemIcon;
+    }
+
+    public void setImageIcon(@Nullable String imageIcon) {
+        this.imageIcon = imageIcon;
     }
 
     public void setX(double x) {
@@ -134,6 +149,11 @@ public class WarpPoint {
         config.set("y", y);
         config.set("z", z);
         config.set("d", yaw);
+        config.set("icon_item", Optional.ofNullable(itemIcon)
+                .map(Enum::name)
+                .map(String::toLowerCase)
+                .orElse(null));
+        config.set("icon_image", imageIcon);
     }
 
     public static WarpPoint read(String id, ConfigurationSection section) {
@@ -145,7 +165,18 @@ public class WarpPoint {
         double z = section.getDouble("z");
         int yaw = section.getInt("d");
 
-        return new WarpPoint(id, display, slot, world, x, y, z, yaw);
+        String tmp = section.getString("icon_item");
+        Material icon = null;
+        if (tmp != null) {
+            try {
+                icon = Material.valueOf(tmp.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException ignored) {
+            }
+        }
+        WarpPoint point = new WarpPoint(id, display, slot, world, x, y, z, yaw);
+        point.setItemIcon(icon);
+        point.setImageIcon(section.getString("icon_image"));
+        return point;
     }
 
     public boolean checkAllowedAccess(Player player) throws AccessDenied {

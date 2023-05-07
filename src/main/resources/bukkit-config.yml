@@ -3,6 +3,8 @@ targets:
   spawn:
     display: "&6初期スポーン地点"
     slot: 0
+    icon_item: apple  # bukkit material (java only)
+    icon_image: null  # image url (bedrock only)
     world: lobby
     x: 0
     y: 0

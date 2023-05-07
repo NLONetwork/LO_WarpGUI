@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class WarpMenuPanel extends Panel {
@@ -46,7 +47,8 @@ public class WarpMenuPanel extends Panel {
 
         for (int i = 0; i < points.size() && i < getSize(); i++) {
             WarpPoint point = points.get(i);
-            slots[i] = PanelItem.create(point.isAllowedAccess(getPlayer()) ? Material.SUNFLOWER : Material.BARRIER)
+            Material icon = Optional.ofNullable(point.getItemIcon()).orElse(Material.SUNFLOWER);
+            slots[i] = PanelItem.create(point.isAllowedAccess(getPlayer()) ? icon : Material.BARRIER)
                     .name(point.getDisplayNameOrId() + ChatColor.GOLD + " に移動する")
                     .build()
                     .setClickListener((ev, p) -> {
