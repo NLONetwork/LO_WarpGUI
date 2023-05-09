@@ -67,7 +67,15 @@ public final class WarpGUIPlugin extends JavaPlugin implements Listener {
     }
 
     public void openFloodgateGUI(FloodgatePlayer player) {
-        WarpMenuPanelFloodgate.open(Bukkit.getPlayer(player.getJavaUniqueId()), player);
+        Player bukkitPlayer = Bukkit.getPlayer(player.getJavaUniqueId());
+        if (bukkitPlayer == null)
+            return;
+
+        WarpMenuPanelFloodgate.open(bukkitPlayer, player);
+    }
+
+    public boolean isBedrockPlayer(Player player) {
+        return FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId());
     }
 
     public boolean checkAllowedAccess(WarpPoint point, Player player) throws WarpPoint.AccessDenied {
@@ -91,6 +99,12 @@ public final class WarpGUIPlugin extends JavaPlugin implements Listener {
     public void onMainPanel(InfoGUIMailPanelEvent event) {
         String name = ChatColor.AQUA + "施設移動";
         event.getSlots()[31] = PanelItem.createItem(Material.ENDER_PEARL, name).setClickListener((e, p) -> {
+            if (isBedrockPlayer(event.getPlayer())) {
+                event.getPlayer().closeInventory();
+                getServer().getScheduler().runTaskLater(this, () ->
+                        openGUI(event.getPlayer()), 5);
+                return;
+            }
             openGUI(event.getPlayer());
         });
     }
